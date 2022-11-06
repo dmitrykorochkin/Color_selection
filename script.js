@@ -35,20 +35,29 @@ function genereteRandomColor() {
   return "#" + color;
 }
 
-function setRandomColors() {
-    const colors = [];
+function setRandomColors(isInitial) {
+    const colors = isInitial ? getColorsFromHash() : []; 
 
-  cols.forEach(col => {
+  cols.forEach((col, index )=> {
     const isLocked = col.querySelector('i').classList.contains('fa-lock');
     const text = col.querySelector('h2');
     const button = col.querySelector('button');
-    const color = genereteRandomColor();
+    
 
     if (isLocked) {
         colors.push(text.textContent);
         return;
     }
-    colors.push(color)
+
+    const color = isInitial 
+    ? colors[index]
+        ? colors[index]
+        : genereteRandomColor()
+    : genereteRandomColor();
+
+    if(!isLocked) {
+        colors.push(color);
+    }
 
     text.textContent = color;
     col.style.background = color;
@@ -70,7 +79,10 @@ function updateColorsHash(colors = []) {
 }
 
 function getColorsFromHash() {
-    
+    if(document.location.hash.length > 1) {
+        document.location.hash.substring(1).split('-').map((color) => '#' + color);
+    }
+    return[]
 }
 
-setRandomColors();
+setRandomColors(true);
